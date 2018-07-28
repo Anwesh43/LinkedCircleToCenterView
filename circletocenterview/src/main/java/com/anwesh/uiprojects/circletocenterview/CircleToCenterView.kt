@@ -7,6 +7,7 @@ package com.anwesh.uiprojects.circletocenterview
 import android.app.Activity
 import android.view.View
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.view.MotionEvent
 import android.graphics.Paint
 import android.graphics.Canvas
@@ -25,13 +26,13 @@ fun Canvas.drawCTCNode(i : Int, scale : Float, paint : Paint) {
     paint.strokeCap = Paint.Cap.ROUND
     paint.strokeWidth = Math.min(w, h) / 60
     paint.color = Color.parseColor("#42A5F5")
-    paint.style = Paint.Style.STROKE 
+    paint.style = Paint.Style.STROKE
     save()
     translate(i * gap + gap/2, h/2)
     for (i in 0..3) {
         save()
         rotate(90f * i)
-        drawArc(RectF(-r, -r, r, r), 90f * sc1, 90f * (1 - sc1), false, paint)
+        drawArc(RectF(-r, -r, r, r), 0f, 90f * (1 - sc1), false, paint)
         drawLine(r - r * sc1, 0f, r - r * sc2, 0f, paint)
         restore()
     }
@@ -58,7 +59,7 @@ class CircleToCenterView (ctx : Context) : View(ctx) {
     data class State(var scale : Float = 0f, var prevScale : Float = 0f, var dir : Float = 0f) {
 
         fun update(cb : (Float) -> Unit) {
-            scale += 0.1f * dir
+            scale += 0.025f * dir
             if (Math.abs(scale - prevScale) > 1) {
                 scale = prevScale + dir
                 dir = 0f
@@ -81,7 +82,7 @@ class CircleToCenterView (ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(30)
                     view.invalidate()
                 } catch(ex : Exception) {
 
@@ -199,6 +200,7 @@ class CircleToCenterView (ctx : Context) : View(ctx) {
         fun create(activity : Activity) : CircleToCenterView {
             val view : CircleToCenterView = CircleToCenterView(activity)
             activity.setContentView(view)
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             return view
         }
     }
