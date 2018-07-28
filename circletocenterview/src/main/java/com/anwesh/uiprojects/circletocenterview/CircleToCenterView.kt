@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.circletocenterview
  * Created by anweshmishra on 29/07/18.
  */
 
+import android.app.Activity
 import android.view.View
 import android.content.Context
 import android.view.MotionEvent
@@ -190,6 +191,14 @@ class CircleToCenterView (ctx : Context) : View(ctx) {
             lctc.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : CircleToCenterView {
+            val view : CircleToCenterView = CircleToCenterView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
