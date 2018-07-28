@@ -169,4 +169,27 @@ class CircleToCenterView (ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : CircleToCenterView) {
+
+        private val animator : Animator = Animator(view)
+
+        private val lctc : LinkedCircleToCenter = LinkedCircleToCenter(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            lctc.draw(canvas, paint)
+            animator.animate {
+                lctc.update {i, scale ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            lctc.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
