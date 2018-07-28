@@ -25,6 +25,7 @@ fun Canvas.drawCTCNode(i : Int, scale : Float, paint : Paint) {
     paint.strokeCap = Paint.Cap.ROUND
     paint.strokeWidth = Math.min(w, h) / 60
     paint.color = Color.parseColor("#42A5F5")
+    paint.style = Paint.Style.STROKE 
     save()
     translate(i * gap + gap/2, h/2)
     for (i in 0..3) {
