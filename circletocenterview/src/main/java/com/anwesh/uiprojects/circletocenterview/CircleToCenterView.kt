@@ -45,6 +45,8 @@ class CircleToCenterView (ctx : Context) : View(ctx) {
 
     private val renderer : Renderer = Renderer(this)
 
+    var onAnimationListener : AnimationListener? = null
+
     override fun onDraw(canvas : Canvas) {
         renderer.render(canvas, paint)
     }
@@ -54,6 +56,10 @@ class CircleToCenterView (ctx : Context) : View(ctx) {
             MotionEvent.ACTION_DOWN -> renderer.handleTap()
         }
         return true
+    }
+
+    fun addAnimationListener(onComplete : (Int) -> Unit, onReset : (Int) -> Unit) {
+        onAnimationListener = AnimationListener(onComplete, onReset)
     }
 
     data class State(var scale : Float = 0f, var prevScale : Float = 0f, var dir : Float = 0f) {
@@ -185,6 +191,10 @@ class CircleToCenterView (ctx : Context) : View(ctx) {
             animator.animate {
                 lctc.update {i, scale ->
                     animator.stop()
+                    when (scale) {
+                        0f -> view.onAnimationListener?.onReset?.invoke(i)
+                        1f -> view.onAnimationListener?.onComplete?.invoke(i)
+                    }
                 }
             }
         }
@@ -204,4 +214,6 @@ class CircleToCenterView (ctx : Context) : View(ctx) {
             return view
         }
     }
+
+    data class AnimationListener(var onComplete : (Int) -> Unit, var onReset : (Int) -> Unit)
 }
